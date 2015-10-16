@@ -23,19 +23,12 @@ function clear() {
 }
 
 function getCode() {
-	//var authorizationUrl = 'https://localhost:44333/core/connect/authorize';
+	/* Google api call
 	var authorizationUrl = 'https://accounts.google.com/o/oauth2/auth';
 	var client_id = '466715129981-c1va3i0evhfcfa2tjrq1qsquflhqg9hr.apps.googleusercontent.com';
-	//'implicitclient';
 	var redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
-	//'http://localhost:21575/index.html';
 	var response_type = 'code';
-	//"token";
 	var scope = 'profile';
-	//"write";
-	//var state = Date.now() + "" + Math.random();
-
-	//localStorage["state"] = state;
 
 	var url =
 		authorizationUrl + "?" +
@@ -45,6 +38,66 @@ function getCode() {
 		"scope=" + encodeURI(scope);// + "&" +
 		//"state=" + encodeURI(state);
 	window.open(url);
+	*/
+	
+	//var authUrl = "https://sts.childrensmiraclenetworkhospitals.org/core";
+	
+	//window.open("https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize?client_id=1772011F-B2BD-49BD-8902-9864F24B8AFE&redirect_uri=urn%3acmnh%3amb%3aoauth%3a2.0%3aoob&response_mode=form_post&response_type=id_token&scope=openid+inflight&state=OpenIdConnect.AuthenticationProperties%3dTpFkTRU78UCmThtxinPgpEm1ROjXYYa9seG-89pYA3cqgcoXMtc21RWbB4aT2gANTQ_apHqdR-dYu2ZRHfBPo-04-vwDhdp3Uc1uoOQ5QBjAFuY_Ej_j1lJbz2WyIoHP1G4KJGpy1hU3nemflPMX1akt6b3AdZcgboLtluOKTQ5QTKwXiTOyhbeOWyCk_xNGlHSVK9fY3mWC3GSuMteE5g&nonce=635804661859099649.MjJiYjVmYmQtMDM5Ny00ZDg5LTk4NTItNjRhOThmN2Q3ZmJmODg2MTRjN2UtNGQyNy00ZTVkLWJhYjctYzBhYzBhOGE0OGZm");
+	var authUrl = "https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize";
+	var client_id = "1772011F-B2BD-49BD-8902-9864F24B8AFE";
+	var redirect_uri = "urn:ietf:wg:oauth:2.0:oob";
+	var response_type = "id_token";
+	var scope = "openid inflight";
+	var response_mode = "form_post";
+	var SignInAsAuthenticationType = "Cookies";
+	
+	var url =
+		authUrl + "?" +
+		"client_id=" + (client_id) + "&" +
+		"redirect_uri=" + (redirect_uri) + "&" +
+		"response_mode=" + (response_mode) + "&" + 
+		"response_type=" + (response_type) + "&" +
+		"scope=" + (scope)
+/*
+		+ "&" +
+		"state=" 
+		+ "OpenIdConnect.AuthenticationProperties=TpFkTRU78UCmThtxinPgpEm1ROjXYYa9seG-89pYA3cqgcoXMtc21RWbB4aT2gANTQ_apHqdR-dYu2ZRHfBPo-04-vwDhdp3Uc1uoOQ5QBjAFuY_Ej_j1lJbz2WyIoHP1G4KJGpy1hU3nemflPMX1akt6b3AdZcgboLtluOKTQ5QTKwXiTOyhbeOWyCk_xNGlHSVK9fY3mWC3GSuMteE5g"
+		+ "&" + 
+		"nonce=" 
+		+ "635804661859099649.MjJiYjVmYmQtMDM5Ny00ZDg5LTk4NTItNjRhOThmN2Q3ZmJmODg2MTRjN2UtNGQyNy00ZTVkLWJhYjctYzBhYzBhOGE0OGZm";
+		*/
+		//"SignInAsAuthenticationType=" + encodeURI(SignInAsAuthenticationType);
+		
+	var myData =  {
+		'client_id': client_id,
+		'redirect_uri': redirect_uri,
+		'response_type': response_type,
+		'response_mode': 'form_post',
+		'scope': scope,
+		//'SignInAsAuthenticationType': SignInAsAuthenticationType
+	}
+		
+	$.support.cors = true;
+		
+	$.ajax({
+      type: "GET",
+	  contentType: "application/x-www-form-urlencoded",
+      url: authUrl,
+      data: myData,
+      success:function(data, status, request){
+		  //alert(data);
+		  alert(request.getResponseHeader('Location'));
+			//api_token = data["access_token"];
+			//var tokenView = document.getElementById('apiToken');
+			//tokenView.value = data["access_token"];
+        },
+		error:function (xhr, ajaxOptions, thrownError){
+			//var data = xhr.responseJSON;
+            //alert(data['error_description']); //throw any errors
+			//alert(data);
+        }
+    });
+	//window.open(url);
 }
 
 function useCode() {
@@ -52,7 +105,6 @@ function useCode() {
 	var code = document.getElementById('access_code').value;
 	var client_id = '466715129981-c1va3i0evhfcfa2tjrq1qsquflhqg9hr.apps.googleusercontent.com';
 	var client_secret = 'uvWvyUre4B_kAU3XB_YNRG60';
-	//var redirect_uri = 'https://oauth2-login-demo.appspot.com/auth?code=' + code;
 	var redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
 	var grant_type='authorization_code';
 	//code';
