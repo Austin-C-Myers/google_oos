@@ -1,45 +1,88 @@
+      var token;
 
-document.querySelector(".redirect").addEventListener("click", redirect, false);
+        if (window.location.hash) {
+            token = processTokenCallback();
+        }
 
-function redirect() {
-	var authUrl = "https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize";
-	var client_id = "1772011F-B2BD-49BD-8902-9864F24B8AFE";
-	var redirect_uri = "urn:ietf:wg:oauth:2.0:oob";
-	var httpRedirectUri = "urn%3acmnh%3amb%3aoauth%3a2.0%3aoob";
-	var response_type = "id_token";
-	var scope = "openid inflight";
-	var httpScope = "openid+inflight";
-	var response_mode = "form_post";
-	var randState = "OpenIdConnect.AuthenticationProperties%3" + randomString("dzASaOVWGJoNmvETksMXG6gGMgQXItkPd3FQZ_2rWgpSRlbJqtLlKHY7Z7lBRsuAkc0Thubylc1gWDA_i2UsSa5fd3OiXfiyIhPYODJboySyHknoOTmVM_-sK3voVYbXBb8AtFWfuef_Uw6f8k7SxnDqIfjMbCWdBYHCi8_dtZln-MYXKduJ0xsigpsf45p0gGKKTULPM-5GReKNgEKlSFg".length, "multiple");
-	var randNonce = randomString(18, "numbers") + "." + randomString("MGM1Y2NzQtYjkyYi00YjQ0LWI5555tMmYyMmIyDNhNGFmYTFiOWQ1ZGMtZTRiNi00ZWViLThhMDQtNDljNmRlODc5ZjA2".length, "multiple");
-	
-	window.open(
-			authUrl
-		 + "?client_id=" + client_id
-		 + "&redirect_uri=" + httpRedirectUri
-		 + "&response_mode=" + response_mode
-		 + "&response_type=" + response_type
-		 + "&scope=" + httpScope
-		 + "&state=" + randState
-		 + "&nonce=" + randNonce
-	 );
-}
+        if (token) {
+            document.querySelector("body").className = "token";
+        }
 
-function randomString(length, type) {
-    var text = "";
-	var error = {
-		'error': type + " not valid option"
-	};
-    var possible;
-	if (type == "numbers")
-		possible = "0123456789";
-	else if (type == "multiple")
-		possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	else
-		return error;
-	
-    for(var i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-}
+        document.querySelector(".get").addEventListener("click", getToken, false);
+        document.querySelector(".use").addEventListener("click", useToken, false);
+
+        function show(data) {
+            document.querySelector(".results").textContent += JSON.stringify(data, null, 2);
+            document.querySelector(".results").textContent += '\r\n';
+        }
+        function clear() {
+            document.querySelector(".results").textContent = "";
+        }
+
+        function getToken() {
+            var authorizationUrl = 'https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize';
+            var client_id = '1772011F-B2BD-49BD-8902-9864F24B8AFE';
+            //var redirect_uri = 'urn:cmnh:mb:oauth:2.0:oob';
+			var redirect_uri = "http://localhost:37643/";
+            var response_type = "id_token";
+            var scope = "openid inflight";
+            var state = Date.now() + "" + Math.random();
+
+            localStorage["state"] = state;
+
+            var url =
+                authorizationUrl + "?" +
+                "client_id=" + encodeURI(client_id) + "&" +
+                "redirect_uri=" + encodeURI(redirect_uri) + "&" +
+                "response_type=" + encodeURI(response_type) + "&" +
+                "scope=" + encodeURI(scope) + "&" +
+                "state=" + encodeURI(state) + "&" +
+                "nonce=" + encodeURI(state);
+            window.location = url;
+        }
+
+        function processTokenCallback() {
+            var hash = window.location.hash.substr(1);
+            var result = hash.split('&').reduce(function (result, item) {
+                var parts = item.split('=');
+                result[parts[0]] = parts[1];
+                return result;
+            }, {});
+
+            show(result);
+
+            if (!result.error) {
+                if (result.state !== localStorage["state"]) {
+                    show("invalid state");
+                }
+                else {
+                    localStorage.removeItem("state");
+                    return result.access_token;
+                }
+            }
+        }
+
+        function useToken() {
+            clear();
+
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function (e) {
+                if (xhr.status >= 400) {
+                    show({
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        wwwAuthenticate: xhr.getResponseHeader("WWW-Authenticate")
+                    });
+                }
+                else {
+                    show(JSON.parse(xhr.response));
+                }
+            };
+            xhr.onerror = function (e) {
+                console.log(e, xhr);
+                show({ error: "unknown http error" });
+            };
+            xhr.open("GET", "http://localhost:2727/identity", true);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+            xhr.send();
+        }
