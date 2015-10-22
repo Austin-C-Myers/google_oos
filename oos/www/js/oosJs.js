@@ -1,4 +1,5 @@
       var token;
+	  var win;
 
         if (window.location.hash) {
             token = processTokenCallback();
@@ -38,7 +39,8 @@
                 "scope=" + encodeURI(scope) + "&" +
                 "state=" + encodeURI(state) + "&" +
                 "nonce=" + encodeURI(state);
-            window.location = url;
+            //window.location = url;
+			win = cordova.InAppBrowser.open(url, "_blank");
         }
 
         function processTokenCallback() {
