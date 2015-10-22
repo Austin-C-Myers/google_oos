@@ -48,8 +48,13 @@
                 result[parts[0]] = parts[1];
                 return result;
             }, {});
+			
+			var id_token = result["id_token"];		
+			var header = JSON.parse(atob(id_token.split('.')[0]));
+            var token = JSON.parse(atob(id_token.split('.')[1]));  
 
-            show(result);
+
+            show(token);
 
             if (!result.error) {
                 if (result.state !== localStorage["state"]) {
