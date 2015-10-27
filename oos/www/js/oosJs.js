@@ -1,5 +1,10 @@
       var token;
 	  var win;
+	  
+	  function handleOpenURL(url) {
+		//alert("received url: " + url);
+		processToken(url);
+		}
 
         if (window.location.hash) {
             token = processTokenCallback();
@@ -23,11 +28,12 @@
         function getToken() {
             var authorizationUrl = 'https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize';
             var client_id = '1772011F-B2BD-49BD-8902-9864F24B8AFE';
-            //var redirect_uri = 'urn:cmnh:mb:oauth:2.0:oob';
-			var redirect_uri = "http://localhost:37643/";
+            var redirect_uri = 'urn:cmnh:mb:oauth:2.0:oob';
+			//var redirect_uri = "http://localhost:37643/";
             var response_type = "id_token";
             var scope = "openid inflight";
             var state = Date.now() + "" + Math.random();
+			var response_mode = "fragment";
 
             localStorage["state"] = state;
 
@@ -36,11 +42,21 @@
                 "client_id=" + encodeURI(client_id) + "&" +
                 "redirect_uri=" + encodeURI(redirect_uri) + "&" +
                 "response_type=" + encodeURI(response_type) + "&" +
+				"response_mode=" + encodeURI(response_mode) + "&" +
                 "scope=" + encodeURI(scope) + "&" +
                 "state=" + encodeURI(state) + "&" +
                 "nonce=" + encodeURI(state);
-            //window.location = url;
-			win = cordova.InAppBrowser.open(url, "_blank");
+            window.location = url;
+			//win = window.open(url);
+			/*
+			win.addEventListener( "loadstop", function() {
+				win.executeScript(
+					{ code: "document.title" },
+					function( values ) {
+						token = values[ 0 ];
+					}
+				);
+				*/
         }
 
         function processTokenCallback() {

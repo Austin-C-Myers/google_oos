@@ -1,12 +1,13 @@
 <html ng-app="cordovaOos">
     <head>
 		<title>OOS</title>
+		<!--
 		<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:">
-        <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">-->
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    </head>
+    -->
+	</head>
 	<body class="no-token" ng-controller="redirectCtrl" >
 		<!--<a href="index.html">Refresh Page</a>-->
 		<div></div>
@@ -14,17 +15,39 @@
 		<button class="redirect" id="redirect">{{redirectName}}</button>
 					-->
 		    <a href="index.html">Refresh Page</a>
-    <button class="get">Get Token</button>
+			<button class="get">Get Token</button>
+			<a href="#" onclick="alert(window.foo);">Alert the value of "foo"</a>
+	<!--
+	<a href="cmnhApp://index?id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ilp1NzE2Y3FHa3c5enZqNk8tdDVzMGhIaGhEWSIsImtpZCI6Ilp1NzE2Y3FHa3c5enZqNk8tdDVzMGhIaGhEWSJ9.eyJub25jZSI6IjE0NDU4OTg1MDYyODUwLjYzMTE2MDE5ODk0OTA4NzMiLCJpYXQiOjE0NDU4OTg1MDYsInN1YiI6ImVvc21vbmRAY21uaG9zcGl0YWxzLm9yZyIsImFtciI6WyJwYXNzd29yZCJdLCJhdXRoX3RpbWUiOjE0NDU4OTU3MTQsImlkcCI6Imlkc3J2IiwidXNlcl90eXBlX2lkIjoiMiIsIm1hcmtldF9pZCI6IjIwNyIsImlzcyI6Imh0dHBzOi8vc3RzLmNoaWxkcmVuc21pcmFjbGVuZXR3b3JraG9zcGl0YWxzLm9yZy9jb3JlIiwiYXVkIjoiMTc3MjAxMUYtQjJCRC00OUJELTg5MDItOTg2NEYyNEI4QUZFIiwiZXhwIjoxNDQ1OTAyMTA2LCJuYmYiOjE0NDU4OTg1MDZ9.jY52SM8XH4dglXi3gP3JRW2cgFM1RTkHB4rLzII3q1pfPHL2scwB8Cc9W7gCeHW7r1rkDmVEaYCkICB-ZkBTq3DfHOpt6Cl6K_b-nZkCIE3pg_IpzhsQ88QoRvPKIdLXLVGdAXQSn3eoSzjFAF0KNELLJRxcOn4N_7tFPxbPMOVDAFHO5Zmmvio7FdKgfZCo3mB0hQm9lWjpCk81sMNipz5Gy4LqBd_amPqIfjuLYPwhhVT2K5FggnsVQio5mqqVRK5gGUK17p8hVnpQ-xbgefezP4S80UEM3S9UPXTWFeXkYVzOrJVeqpnRAlBJQ9zy5FDpQonwIfWHA-k5u_5o6w&scope=openid%20inflight&state=14458985062850.6311601989490873&session_state=aZJvbN1HNMrlT2aBTfH1hBLu2ieK7p1__3ukzb18Epo.01fe68431945081df0731398bad08e8e"
+		>Open my app</a>
+		-->
 	<!--
     <button class="use">Use Token</button>
 		-->
 		<pre class="results"></pre>
-
+		
+		<script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript" src="js/angular.min.js"></script>
 		<script type="text/javascript" src="js/controller.js"></script>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/oosJs.js"></script>
+		<script>
+			 function handleOpenURL (url) {
+				setTimeout(function() {
+					window.foo = 'The url is ' + url;
+					// This function is triggered by the LaunchMyApp Plugin
+					/*
+					if (!app) {
+						handleOpenURL(url);
+					} else {
+						app.target_url = url;
+						app.handle_url();
+					}
+					*/
+					// This timeout of at least 3 seconds is necessary - otherwise the handleOpenURL() function does not work when an external link is clicked and the App is closed.
+				}, 4000);
+			}
+		</script>
     </body>
 </html>

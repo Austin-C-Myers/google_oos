@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+ 
 var app = {
     // Application Constructor
     initialize: function() {
@@ -45,7 +46,68 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+		alert('Received Event: ' + id);
+    },
+	
+	target_url:null,
+    target_url_params:{},
+
+    handle_url_params:function() {
+        params = app.target_url_params;
+        if (params != null) {
+            // Got your parameters - now you can do whatever you want :)
+			alert("got params");
+        }
+		else{
+			alert("no params");
+		}
+        // We can now "forget" the target_url
+        app.target_url = null;
+    },
+	
+	handle_url:function() {
+        var params = {};
+        if (app.target_url) {
+            // target_url must be of the following format: prefix://something?key1=value1&key2=value2...
+            var parts = app.target_url.replace(/^.+:\/\/[^?]*\?(.+)/, '$1').split('&');
+            for (var i = 0; i < parts.length; i++) {
+                var nv = parts[i].split('=');
+                if (nv[0] && nv[1]) {
+                    params[nv[0]] = nv[1];
+                }
+            }
+        }
+        app.target_url_params = params;
+        if (params != null) {
+            app.handle_url_params();
+        }        
     }
 };
 
 app.initialize();
+
+function processToken(url) {
+	var hash = url.hash.substr(1);
+	var result = hash.split('&').reduce(function (result, item) {
+		var parts = item.split('=');
+		result[parts[0]] = parts[1];
+		return result;
+	}, {});
+	
+	var id_token = result["id_token"];		
+	var header = JSON.parse(atob(id_token.split('.')[0]));
+	var token = JSON.parse(atob(id_token.split('.')[1]));  
+
+
+	show(token);
+
+	if (!result.error) {
+		if (result.state !== localStorage["state"]) {
+			show("invalid state");
+		}
+		else {
+			localStorage.removeItem("state");
+			return result.access_token;
+		}
+	}
+}
