@@ -26,11 +26,14 @@
         }
 
         function getToken() {
-		
-            var authorizationUrl = 'https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize';
+			//var baseurl = 'http://devcmnh.azurewebsites.net/'
+			var baseurl = 'https://sts.childrensmiraclenetworkhospitals.org/';
+            var authorizationUrl = baseurl + 'core/connect/authorize';
             var client_id = '1772011F-B2BD-49BD-8902-9864F24B8AFE';
-            var redirect_uri = 'urn:cmnh:mb:oauth:2.0:oob';
+            //var redirect_uri = 'urn:cmnh:mb:oauth:2.0:oob';
 			//var redirect_uri = "http://localhost:37643/";
+			//var redirect_uri = 'cmnhapp://';
+			var redirect_uri = 'cmnhinflight://';
             var response_type = "id_token";
             var scope = "openid inflight";
             var state = Date.now() + "" + Math.random();
