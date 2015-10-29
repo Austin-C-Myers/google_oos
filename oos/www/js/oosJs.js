@@ -26,6 +26,7 @@
         }
 
         function getToken() {
+		
             var authorizationUrl = 'https://sts.childrensmiraclenetworkhospitals.org/core/connect/authorize';
             var client_id = '1772011F-B2BD-49BD-8902-9864F24B8AFE';
             var redirect_uri = 'urn:cmnh:mb:oauth:2.0:oob';
@@ -48,15 +49,29 @@
                 "nonce=" + encodeURI(state);
             window.location = url;
 			//win = window.open(url);
-			/*
-			win.addEventListener( "loadstop", function() {
-				win.executeScript(
-					{ code: "document.title" },
-					function( values ) {
-						token = values[ 0 ];
-					}
-				);
-				*/
+
+/*
+			var authorizationUrl = 'https://localhost:44333/core/connect/authorize';
+            var client_id = 'implicitclient';
+            //var redirect_uri = 'http://localhost:37045/index.html';
+            //var redirect_uri = 'http://localhost:21575/index.html';
+			var redirect_uri = 'cmnhapp://'
+            var response_type = "token";
+            var scope = "write";
+            var state = Date.now() + "" + Math.random();
+
+            localStorage["state"] = state;
+
+            var url =
+                authorizationUrl + "?" +
+                "client_id=" + encodeURI(client_id) + "&" +
+                "redirect_uri=" + encodeURI(redirect_uri) + "&" +
+                "response_type=" + encodeURI(response_type) + "&" +
+                "scope=" + encodeURI(scope) + "&" +
+                "state=" + encodeURI(state);
+			window.open(url, '_system');
+            //window.location = url;
+			*/
         }
 
         function processTokenCallback() {
